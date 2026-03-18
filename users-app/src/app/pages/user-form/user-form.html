@@ -1,1 +1,23 @@
-<p>user-form works!</p>
+<div class="container mt-4">
+
+  <h2>{{ isEdit ? 'Actualizar Usuario' : 'Nuevo Usuario' }}</h2>
+
+  <input class="form-control mb-2" placeholder="Nombre"
+    [(ngModel)]="user.first_name">
+
+  <input class="form-control mb-2" placeholder="Apellido"
+    [(ngModel)]="user.last_name">
+
+  <input class="form-control mb-2" placeholder="Email"
+    [(ngModel)]="user.email">
+
+  <input class="form-control mb-2" placeholder="URL Imagen"
+    [(ngModel)]="user.image">
+
+  <button (click)="save()" class="btn btn-success">
+    {{ isEdit ? 'Actualizar' : 'Guardar' }}
+  </button>
+
+  <p class="text-danger mt-2">{{error}}</p>
+
+</div>

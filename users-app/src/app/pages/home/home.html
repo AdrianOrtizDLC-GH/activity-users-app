@@ -1,1 +1,30 @@
-<p>home works!</p>
+<div class="container mt-4">
+  <div class="row">
+
+    <div class="col-md-4 mb-4" *ngFor="let user of users">
+
+      <div class="card">
+        <img [src]="user.image" class="card-img-top">
+
+        <div class="card-body">
+          <h5>{{user.first_name}} {{user.last_name}}</h5>
+
+          <a [routerLink]="['/user',user._id]" class="btn btn-primary btn-sm">
+            Ver detalle
+          </a>
+
+          <a [routerLink]="['/updateuser',user._id]" class="btn btn-warning btn-sm">
+            Actualizar
+          </a>
+
+          <button (click)="deleteUser(user._id!)" class="btn btn-danger btn-sm">
+            Borrar
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

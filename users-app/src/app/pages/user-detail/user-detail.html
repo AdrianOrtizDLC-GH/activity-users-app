@@ -1,1 +1,21 @@
-<p>user-detail works!</p>
+<div class="container mt-4" *ngIf="user">
+
+  <h2>{{user.first_name}} {{user.last_name}}</h2>
+
+  <img [src]="user.image" width="200">
+
+  <p>Email: {{user.email}}</p>
+
+  <button routerLink="/home" class="btn btn-secondary">
+    Volver
+  </button>
+
+  <button [routerLink]="['/updateuser',user._id]" class="btn btn-warning">
+    Actualizar
+  </button>
+
+  <button (click)="deleteUser()" class="btn btn-danger">
+    Borrar
+  </button>
+
+</div>
