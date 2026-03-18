@@ -8,7 +8,7 @@ import { User } from '../interfaces/user'
 })
 export class UsersService {
 
-  private apiUrl = 'https://peticiones.online/users'
+  private apiUrl = 'https://peticiones.online/api/users'
 
   constructor(private http: HttpClient) {}
 
