@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router'
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './home.component.html'
+  templateUrl: './home.html'
 })
 export class HomeComponent implements OnInit {
 

@@ -9,7 +9,7 @@ import { User } from '../../interfaces/user'
   selector: 'app-user-form',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './user-form.component.html'
+  templateUrl: './user-form.html'
 })
 export class UserFormComponent implements OnInit {
 
@@ -55,13 +55,15 @@ export class UserFormComponent implements OnInit {
 
     if(this.isEdit){
       this.usersService.updateUser(this.user._id!, this.user)
-        .subscribe(()=>{
-          this.router.navigate(['/home'])
+        .subscribe({
+          next: ()=> this.router.navigate(['/home']),
+          error: ()=> this.error = 'No se pudo actualizar el usuario'
         })
     }else{
       this.usersService.createUser(this.user)
-        .subscribe(()=>{
-          this.router.navigate(['/home'])
+        .subscribe({
+          next: ()=> this.router.navigate(['/home']),
+          error: ()=> this.error = 'No se pudo crear el usuario'
         })
     }
 

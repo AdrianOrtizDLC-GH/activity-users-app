@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common'
   selector: 'app-user-detail',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './user-detail.component.html'
+  templateUrl: './user-detail.html'
 })
 export class UserDetailComponent implements OnInit {
 
