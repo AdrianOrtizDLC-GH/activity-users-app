@@ -1,7 +1,15 @@
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { User } from '../interfaces/user'
+
+export interface UsersApiResponse {
+  page: number
+  per_page: number
+  total: number
+  total_pages: number
+  results: User[]
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +20,9 @@ export class UsersService {
 
   constructor(private http: HttpClient) {}
 
-  getUsers(): Observable<any> {
-    return this.http.get(this.apiUrl)
+  getUsers(page = 1): Observable<UsersApiResponse> {
+    const params = new HttpParams().set('page', page.toString())
+    return this.http.get<UsersApiResponse>(this.apiUrl, { params })
   }
 
   getUser(id:string): Observable<any> {

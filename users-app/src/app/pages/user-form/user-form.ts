@@ -41,6 +41,17 @@ export class UserFormComponent implements OnInit {
     }
   }
 
+  normalizeServerUser(user: any): User {
+    const normalized = { ...user } as User
+    if(!normalized._id && normalized.id){
+      normalized._id = normalized.id
+    }
+    if(!normalized.username && normalized.email){
+      normalized.username = normalized.email.split('@')[0]
+    }
+    return normalized
+  }
+
   save(){
 
     if(!this.user.first_name || !this.user.last_name || !this.user.email){
@@ -56,13 +67,19 @@ export class UserFormComponent implements OnInit {
     if(this.isEdit){
       this.usersService.updateUser(this.user._id!, this.user)
         .subscribe({
-          next: ()=> this.router.navigate(['/home']),
+          next: updated => {
+            const normalizedUpdated = this.normalizeServerUser(updated)
+            this.router.navigate(['/home'], { state: { updatedUser: normalizedUpdated } })
+          },
           error: ()=> this.error = 'No se pudo actualizar el usuario'
         })
     }else{
       this.usersService.createUser(this.user)
         .subscribe({
-          next: ()=> this.router.navigate(['/home']),
+          next: created => {
+            const normalizedCreated = this.normalizeServerUser(created)
+            this.router.navigate(['/home'], { state: { newUser: normalizedCreated } })
+          },
           error: ()=> this.error = 'No se pudo crear el usuario'
         })
     }

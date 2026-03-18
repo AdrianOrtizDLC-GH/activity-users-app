@@ -23,7 +23,7 @@ export class UserDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id')!
     this.usersService.getUser(id)
       .subscribe(res=>{
-        this.user = res
+        this.user = { ...res, _id: res._id || res.id } 
       })
   }
 
