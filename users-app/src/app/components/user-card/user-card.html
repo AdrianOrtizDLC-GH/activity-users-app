@@ -1,1 +1,26 @@
-<p>user-card works!</p>
+<div class="card">
+  <img [src]="user.image" class="card-img-top">
+
+  <div class="card-body">
+    <h5>
+      {{ user.first_name }} {{ user.last_name }}
+    </h5>
+
+    <p>{{ user.email }}</p>
+
+    <button class="btn btn-primary me-2" (click)="viewDetail()">
+      Ver detalle
+    </button>
+
+    <button class="btn btn-warning me-2"
+            [routerLink]="['/updateuser', user._id || user.id]">
+      Editar
+    </button>
+
+    <button class="btn btn-danger"
+            (click)="deleteUser()">
+      Borrar
+    </button>
+  </div>
+
+</div>

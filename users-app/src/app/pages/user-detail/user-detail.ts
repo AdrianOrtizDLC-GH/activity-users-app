@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, signal } from '@angular/core'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { UsersService } from '../../services/users.service'
 import { CommonModule } from '@angular/common'
@@ -11,7 +11,9 @@ import { CommonModule } from '@angular/common'
 })
 export class UserDetailComponent implements OnInit {
 
-  user:any
+  user = signal<any>(null)
+  loading = signal(true)
+  error = signal('')
 
   constructor(
     private route:ActivatedRoute,
@@ -21,15 +23,31 @@ export class UserDetailComponent implements OnInit {
 
   ngOnInit(){
     const id = this.route.snapshot.paramMap.get('id')!
+    this.loading.set(true)
+    this.error.set('')
+
     this.usersService.getUser(id)
-      .subscribe(res=>{
-        this.user = { ...res, _id: res._id || res.id } 
+      .subscribe({
+        next: res => {
+          this.user.set({ ...res, _id: res._id || res.id })
+          this.loading.set(false)
+        },
+        error: err => {
+          this.loading.set(false)
+          this.error.set('Error cargando usuario: ' + (err.message || err))
+          console.error('Error en getUser', err)
+        }
       })
   }
 
   deleteUser(){
+    const user = this.user()
+    if(!user){
+      return
+    }
+
     if(confirm("¿Eliminar usuario?")){
-      this.usersService.deleteUser(this.user._id)
+      this.usersService.deleteUser(user._id)
         .subscribe(()=>{
           this.router.navigate(['/home'])
         })

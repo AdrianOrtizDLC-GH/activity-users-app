@@ -1,16 +1,27 @@
-<div class="container mt-4" *ngIf="user">
+<!-- LOADING -->
+<div *ngIf="loading()" class="alert alert-info">
+  Cargando usuario...
+</div>
 
-  <h2>{{user.first_name}} {{user.last_name}}</h2>
+<!-- ERROR -->
+<div *ngIf="error()" class="alert alert-danger">
+  {{ error() }}
+</div>
 
-  <img [src]="user.image" width="200">
+<!-- USER DETAILS -->
+<div class="container mt-4" *ngIf="user()">
 
-  <p>Email: {{user.email}}</p>
+  <h2>{{user().first_name}} {{user().last_name}}</h2>
+
+  <img [src]="user().image" width="200">
+
+  <p>Email: {{user().email}}</p>
 
   <button routerLink="/home" class="btn btn-secondary">
     Volver
   </button>
 
-  <button [routerLink]="['/updateuser',user._id]" class="btn btn-warning">
+  <button [routerLink]="['/updateuser',user()._id]" class="btn btn-warning">
     Actualizar
   </button>
 

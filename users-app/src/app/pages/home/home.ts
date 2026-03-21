@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, signal } from '@angular/core'
 import { UsersService } from '../../services/users.service'
 import { User } from '../../interfaces/user'
 import { CommonModule } from '@angular/common'
-import { RouterLink } from '@angular/router'
+import { UserCard } from '../../components/user-card/user-card'
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, UserCard],
   templateUrl: './home.html'
 })
 export class HomeComponent implements OnInit {
 
-  users:User[]=[]
-  loading = true
-  apiError = ''
+  users = signal<User[]>([])
+  loading = signal(true)
+  apiError = signal('')
 
   constructor(private usersService:UsersService){}
 
@@ -38,35 +38,38 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(){
     const state = history.state as { newUser?: User, updatedUser?: User } | undefined
-    this.loading = true
-    this.apiError = ''
+    this.loading.set(true)
+    this.apiError.set('')
 
     this.usersService.getUsers(1).subscribe({
       next: res => {
         const rawUsers: any[] = Array.isArray(res?.results) ? res.results : []
-        this.users = rawUsers.map(u => this.normalizeUser(u))
+        const normalizedUsers = rawUsers.map(u => this.normalizeUser(u))
+
+        let currentUsers = normalizedUsers
 
         if(state?.newUser){
           const newUser = this.normalizeUser(state.newUser as any)
-          if(!this.users.some(u => this.getUserKey(u) === this.getUserKey(newUser))){
-            this.users.unshift(newUser)
+          if(!currentUsers.some(u => this.getUserKey(u) === this.getUserKey(newUser))){
+            currentUsers.unshift(newUser)
           }
         }
 
         if(state?.updatedUser){
           const updatedUser = this.normalizeUser(state.updatedUser as any)
-          this.users = this.users.map(u => this.getUserKey(u) === this.getUserKey(updatedUser) ? updatedUser : u)
-          if(!this.users.some(u => this.getUserKey(u) === this.getUserKey(updatedUser))){
-            this.users.unshift(updatedUser)
+          currentUsers = currentUsers.map(u => this.getUserKey(u) === this.getUserKey(updatedUser) ? updatedUser : u)
+          if(!currentUsers.some(u => this.getUserKey(u) === this.getUserKey(updatedUser))){
+            currentUsers.unshift(updatedUser)
           }
         }
 
-        this.loading = false
-        console.log('Home users final', this.users)
+        this.users.set(currentUsers)
+        this.loading.set(false)
+        console.log('Home users final', this.users())
       },
       error: err => {
-        this.loading = false
-        this.apiError = 'Error cargando usuarios: ' + (err.message || err)
+        this.loading.set(false)
+        this.apiError.set('Error cargando usuarios: ' + (err.message || err))
         console.error('Error en getUsers', err)
       }
     })
@@ -75,10 +78,15 @@ export class HomeComponent implements OnInit {
   // Eliminar loadAllUsers, simplificamos a paginación de 1 página para evitar hangs
 
 
-  deleteUser(id:string){
+  deleteUser(id?: string){
+    if(!id){
+      console.warn('deleteUser called with undefined id')
+      return
+    }
+
     if(confirm("¿Eliminar usuario?")){
       this.usersService.deleteUser(id).subscribe(()=>{
-        this.users = this.users.filter(u => this.getUserKey(u) !== id)
+        this.users.set(this.users().filter(u => this.getUserKey(u) !== id))
       })
     }
   }

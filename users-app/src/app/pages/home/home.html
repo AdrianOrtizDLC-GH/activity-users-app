@@ -1,34 +1,18 @@
-<div class="container mt-4">
-  <div *ngIf="loading" class="alert alert-info">Cargando usuarios…</div>
-  <div *ngIf="apiError" class="alert alert-danger">{{apiError}}</div>
-  <div *ngIf="!loading && !users.length && !apiError" class="alert alert-warning">No se encontraron usuarios</div>
+<!-- LOADING -->
+<div *ngIf="loading()" class="alert alert-info">
+  Cargando usuarios...
+</div>
 
-  <div class="row" *ngIf="users.length">
+<!-- ERROR -->
+<div *ngIf="apiError()" class="alert alert-danger">
+  {{ apiError() }}
+</div>
 
-    <div class="col-md-4 mb-4" *ngFor="let user of users">
+<!-- LISTADO -->
+<div class="row" *ngIf="users().length > 0">
 
-      <div class="card">
-        <img [src]="user.image" class="card-img-top">
-
-        <div class="card-body">
-          <h5>{{user.first_name}} {{user.last_name}}</h5>
-
-          <a [routerLink]="['/user',user._id || user.id]" class="btn btn-primary btn-sm">
-            Ver detalle
-          </a>
-
-          <a [routerLink]="['/updateuser',user._id || user.id]" class="btn btn-warning btn-sm">
-            Actualizar
-          </a>
-
-          <button (click)="deleteUser(user._id || user.id || '')" class="btn btn-danger btn-sm">
-            Borrar
-          </button>
-        </div>
-
-      </div>
-
-    </div>
-
+  <div class="col-md-4 mb-3" *ngFor="let user of users()">
+    <app-user-card [user]="user" (delete)="deleteUser($event)"></app-user-card>
   </div>
+
 </div>
