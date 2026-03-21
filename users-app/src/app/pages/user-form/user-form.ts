@@ -69,6 +69,7 @@ export class UserFormComponent implements OnInit {
         .subscribe({
           next: updated => {
             const normalizedUpdated = this.normalizeServerUser(updated)
+            normalizedUpdated.image = this.user.image // Mantener la imagen del formulario
             this.router.navigate(['/home'], { state: { updatedUser: normalizedUpdated } })
           },
           error: ()=> this.error = 'No se pudo actualizar el usuario'
@@ -78,6 +79,7 @@ export class UserFormComponent implements OnInit {
         .subscribe({
           next: created => {
             const normalizedCreated = this.normalizeServerUser(created)
+            normalizedCreated.image = this.user.image // Usar la imagen del formulario en lugar de la aleatoria de la API
             this.router.navigate(['/home'], { state: { newUser: normalizedCreated } })
           },
           error: ()=> this.error = 'No se pudo crear el usuario'
